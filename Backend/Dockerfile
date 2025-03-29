@@ -1,17 +1,18 @@
-# Use official Python image
-FROM python:3.9
+# Use a Python base image
+FROM python:3.9-slim
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy all backend files
+# Copy the application files
 COPY . .
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies including Gunicorn
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
-# Expose Flask port
+# Expose the backend port
 EXPOSE 5000
 
-# Run the app
-CMD ["python", "contact_book.py"]
+# Run the application with Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "contact_book:app"]
+
